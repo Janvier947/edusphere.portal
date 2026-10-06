@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduSphere Global - Comprehensive Educational Resource Portal</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#2563EB',
+                            600: '#0052cc',
+                            700: '#1d4ed8',
+                            900: '#1e3a8a',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            switch-color: #cbd5e1;
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- Top Navigation Bar -->
+    <header class="bg-brand-600 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchView('dashboard')">
+                <div class="w-10 h-10 rounded-xl bg-white text-brand-600 flex items-center justify-center font-bold text-xl shadow">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight tracking-tight">EduSphere Global</h1>
+                    <p class="text-xs text-blue-100 opacity-90">Universal Academic Resource Hub</p>
+                </div>
+            </div>
+
+            <!-- Global Search Bar -->
+            <div class="hidden md:flex flex-1 max-w-md mx-8">
+                <div class="relative w-full">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                        <i class="fa-solid fa-search"></i>
+                    </span>
+                    <input type="text" id="globalSearchInput" oninput="handleGlobalSearch(this.value)" placeholder="Search subjects, topics, textbooks, past papers..." class="w-full pl-10 pr-4 py-2 rounded-lg bg-blue-700/50 text-white placeholder-blue-200 text-sm focus:outline-none focus:ring-2 focus:ring-white/50 border border-blue-500/50 transition">
+                </div>
+            </div>
+
+            <!-- User Auth & Role Badge -->
+            <div class="flex items-center space-x-3">
+                <div id="userBadge" class="hidden items-center space-x-2 bg-blue-700/80 px-3 py-1.5 rounded-lg text-xs font-medium border border-blue-500/50">
+                    <i class="fa-solid fa-user-shield" id="userRoleIcon"></i>
+                    <span id="userNameDisplay">Guest</span>
+                    <span id="userRoleTag" class="bg-white/20 px-1.5 py-0.5 rounded text-[10px] uppercase font-bold">Role</span>
+                </div>
+                
+                <button onclick="openLoginModal()" id="loginBtnNav" class="bg-white text-brand-600 hover:bg-blue-50 px-4 py-2 rounded-lg text-sm font-semibold shadow transition flex items-center space-x-2">
+                    <i class="fa-solid fa-right-to-bracket"></i>
+                    <span>Sign In</span>
+                </button>
+                
+                <button onclick="logout()" id="logoutBtnNav" class="hidden bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg text-sm font-semibold shadow transition" title="Logout">
+                    <i class="fa-solid fa-power-off"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Application Container -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full grid grid-cols-1 lg:grid-cols-4 gap-6">
+        
+        <!-- Sidebar Navigation (Educational Hierarchy) -->
+        <aside class="lg:col-span-1 space-y-4">
+            <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200">
+                <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 px-2">Academic Levels</h2>
+                <nav id="levelSidebar" class="space-y-1">
+                    <!-- Dynamically populated hierarchy -->
+                </nav>
+            </div>
+
+            <!-- Quick Actions Card -->
+            <div class="bg-gradient-to-br from-brand-600 to-blue-700 text-white rounded-2xl p-5 shadow-md">
+                <h3 class="font-bold text-base mb-1">Contribute Knowledge</h3>
+                <p class="text-xs text-blue-100 mb-4">Students and teachers can submit verified resource links to enrich the global curriculum.</p>
+                <button onclick="openSubmitModal()" class="w-full bg-white text-brand-600 hover:bg-blue-50 font-semibold py-2.5 px-4 rounded-xl text-xs shadow transition flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-circle-plus"></i>
+                    <span>Submit Resource Link</span>
+                </button>
+            </div>
+
+            <!-- AI Assistant Banner Card -->
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
+                <div class="flex items-center space-x-3 mb-2">
+                    <div class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-800 text-sm">EduSphere AI Tutor</h3>
+                </div>
+                <p class="text-xs text-slate-500 mb-3">Ask questions regarding any subject from Nursery to PhD level instantly.</p>
+                <button onclick="switchView('ai-tutor')" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-3 rounded-xl text-xs transition">
+                    Launch AI Assistant
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="lg:col-span-3 space-y-6">
+            
+            <!-- Breadcrumbs & Quick Controls -->
+            <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 flex flex-wrap items-center justify-between gap-4">
+                <div id="breadcrumb" class="text-sm font-medium text-slate-600 flex items-center space-x-2">
+                    <span class="cursor-pointer text-brand-600 hover:underline" onclick="switchView('dashboard')">Home</span>
+                    <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+                    <span id="currentLevelTitle" class="text-slate-800 font-semibold">All Educational Levels</span>
+                </div>
+                
+                <div class="flex items-center space-x-2" id="adminHeaderControls">
+                    <!-- Injected dynamically if user is admin -->
+                </div>
+            </div>
+
+            <!-- Dynamic Viewport -->
+            <div id="mainViewport">
+                <!-- Dynamically rendered content (Dashboard, Subject View, Search Results, AI Tutor, Admin Panel) -->
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100 relative">
+            <button onclick="closeLoginModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div class="text-center mb-6">
+                <div class="w-12 h-12 bg-blue-100 text-brand-600 rounded-2xl flex items-center justify-center mx-auto mb-3 text-xl">
+                    <i class="fa-solid fa-user-lock"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-800">EduSphere Portal Login</h3>
+                <p class="text-xs text-slate-500">Select your role to access role-based privileges</p>
+            </div>
+            
+            <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Full Name</label>
+                    <input type="text" id="loginName" required placeholder="e.g. Dr. Jean Bosco" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Select Role</label>
+                    <select id="loginRole" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                        <option value="Admin">Admin (Full Authority: Approve, Add Subjects, Manage)</option>
+                        <option value="Teacher">Teacher (School Educator)</option>
+                        <option value="Lecturer">Lecturer (University Professor)</option>
+                        <option value="Student">Student (Learner)</option>
+                        <option value="Parent">Parent / Guardian</option>
+                    </select>
+                </div>
+                <div class="pt-2">
+                    <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-2.5 rounded-xl text-sm shadow transition">
+                        Authenticate & Enter Portal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Submit Resource Modal -->
+    <div id="submitModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 relative">
+            <button onclick="closeSubmitModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div class="mb-4">
+                <h3 class="text-lg font-bold text-slate-800">Submit Educational Resource Link</h3>
+                <p class="text-xs text-slate-500">Links submitted by students/teachers require Admin approval before public listing.</p>
+            </div>
+            
+            <form id="submitResourceForm" onsubmit="handleResourceSubmit(event)" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Resource Title</label>
+                    <input type="text" id="resTitle" required placeholder="e.g. Interactive Quantum Physics Simulator" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Educational Level</label>
+                        <select id="resLevel" onchange="populateSubjectDropdown(this.value)" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Target Subject</label>
+                        <select id="resSubject" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Direct Resource Link (URL)</label>
+                    <input type="url" id="resUrl" required placeholder="https://example.com/material.pdf" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Description / Notes</label>
+                    <textarea id="resDesc" rows="2" placeholder="Brief summary of what students will learn..." class="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"></textarea>
+                </div>
+                <div class="pt-2">
+                    <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-2.5 rounded-xl text-sm shadow transition">
+                        Submit for Review
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add New Subject Modal (Admin Only) -->
+    <div id="addSubjectModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100 relative">
+            <button onclick="closeAddSubjectModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div class="mb-4">
+                <h3 class="text-lg font-bold text-slate-800">Add New Subject</h3>
+                <p class="text-xs text-slate-500">Admin Authority: Expand curriculum structure</p>
+            </div>
+            
+            <form onsubmit="handleAddSubject(event)" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Target Educational Level</label>
+                    <select id="newSubLevel" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                        <!-- Populated dynamically -->
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Subject Name</label>
+                    <input type="text" id="newSubName" required placeholder="e.g. Artificial Intelligence Basics" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Description</label>
+                    <textarea id="newSubDesc" rows="2" placeholder="Subject overview..." class="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"></textarea>
+                </div>
+                <div class="pt-2">
+                    <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-2.5 rounded-xl text-sm shadow transition">
+                        Create Subject
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toastNotification" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl flex items-center space-x-3 text-sm">
+        <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
+        <span id="toastMessage">Action completed successfully</span>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Initial Complete Curriculum Data Structure
+        const defaultCurriculum = {
+            "Nursery": {
+                icon: "fa-child",
+                description: "Early childhood foundational development & exploration.",
+                subjects: [
+                    { name: "Discovery of the World", desc: "Basic environment, senses, and surroundings." },
+                    { name: "Numeracy & Pre-Math Activities", desc: "Basic shapes, counting, and patterns." },
+                    { name: "Language & Literacy", desc: "Pre-reading, storytelling, phonics, and mother tongue." },
+                    { name: "Creative Arts & Physical Expression", desc: "Music, dance, drawing, coloring, and drama." },
+                    { name: "Social-Emotional Development", desc: "Hygiene, collaboration, and life orientation." }
+                ]
+            },
+            "Primary": {
+                icon: "fa-book-open-reader",
+                description: "Fundamental primary education across languages, sciences, and humanities.",
+                subjects: [
+                    { name: "Languages (English, French, Local Language)", desc: "Trilingual literacy and communicative grammar." },
+                    { name: "Mathematics", desc: "Arithmetic, geometry, and problem-solving fundamentals." },
+                    { name: "Science and Technology", desc: "Elementary scientific inquiry and basic digital skills." },
+                    { name: "Social Studies", desc: "Merged History, Geography, and Civics." },
+                    { name: "Co-curricular Activities", desc: "Fine Arts, Crafts, Physical Education, and Moral Education." }
+                ]
+            },
+            "Secondary O Level": {
+                icon: "fa-school",
+                description: "Lower secondary broad-based academic and practical training.",
+                subjects: [
+                    { name: "Mathematics", desc: "Algebra, geometry, statistics, and trigonometry." },
+                    { name: "Biology, Chemistry, Physics", desc: "Core laboratory sciences." },
+                    { name: "Humanities & Social Sciences", desc: "Geography, History, and Entrepreneurship." },
+                    { name: "Languages", desc: "English, French, Kiswahili, and Local Language." },
+                    { name: "Electives / Practical Subjects", desc: "ICT, Fine Arts & Crafts, Music, and Agriculture." }
+                ]
+            },
+            "Secondary A Level": {
+                icon: "fa-graduation-cap",
+                description: "Upper secondary specialized pathways and pre-university preparation.",
+                subjects: [
+                    { name: "Compulsory Core Subjects", desc: "Mathematics, English, ICT, and Entrepreneurship." },
+                    { name: "STEM Pathway", desc: "Advanced Mathematics, Physics, Chemistry, Biology, Computer Science." },
+                    { name: "Arts & Humanities Pathway", desc: "History, Geography, Economics, Literature in English." },
+                    { name: "Languages Pathway", desc: "Local Language, French, Kiswahili, Literature." },
+                    { name: "TVET / TTC Alternative Track", desc: "Technical Secondary Schooling and Teacher Training." }
+                ]
+            },
+            "University Undergraduate": {
+                icon: "fa-building-columns",
+                description: "Bachelor's degree programs across STEM, Business, and Arts.",
+                subjects: [
+                    { name: "STEM", desc: "Computer Science, Civil/Mechanical Engineering, Medicine, Pharmacy, Math." },
+                    { name: "Business", desc: "Finance, Accounting, Economics, Marketing." },
+                    { name: "Arts & Social Sciences", desc: "Law, International Relations, Sociology, Linguistics, Education." }
+                ]
+            },
+            "University Masters": {
+                icon: "fa-user-graduate",
+                description: "Postgraduate master's degrees for professional and research mastery.",
+                subjects: [
+                    { name: "Advanced Sciences", desc: "Data Science, Physics, Chemistry Education, Pediatric Surgery." },
+                    { name: "Social & Corporate", desc: "MBA (Business Administration), Project Management, Development Studies." }
+                ]
+            },
+            "PhD": {
+                icon: "fa-atom",
+                description: "Doctoral research and highly specialized academic contributions.",
+                subjects: [
+                    { name: "Medical & Pharmaceutical Sciences", desc: "Advanced clinical and drug research." },
+                    { name: "Mathematics Education & Applied Linguistics", desc: "Specialized pedagogical research." },
+                    { name: "Security & Genocide Studies", desc: "Critical socio-political doctoral research." }
+                ]
+            }
+        };
+
+        // Initial Seed Resources
+        const defaultResources = [
+            { id: 1, title: "Phonics & Storytelling Audio Pack", level: "Nursery", subject: "Language & Literacy", url: "https://example.com/phonics-audio.zip", desc: "Interactive alphabet sounds and nursery rhymes for children.", author: "Admin", date: "2026-03-01", approved: true },
+            { id: 2, title: "Primary Mathematics Workbook Level 3", level: "Primary", subject: "Mathematics", url: "https://example.com/math-primary.pdf", desc: "Complete workbook covering addition, multiplication, and basic fractions.", author: "Admin", date: "2026-03-02", approved: true },
+            { id: 3, title: "Interactive Periodic Table & Chemistry Lab", level: "Secondary O Level", subject: "Biology, Chemistry, Physics", url: "https://example.com/chem-lab", desc: "Virtual lab simulations for high school chemical reactions.", author: "Prof. Claude", date: "2026-03-04", approved: true },
+            { id: 4, title: "Advanced Calculus & Linear Algebra Lectures", level: "University Undergraduate", subject: "STEM", url: "https://example.com/calculus-lectures.pdf", desc: "Comprehensive university textbook with solved problem sets.", author: "Dr. Marie", date: "2026-03-05", approved: true }
+        ];
+
+        // State Management
+        let curriculum = JSON.parse(localStorage.getItem('edusphere_curriculum')) || defaultCurriculum;
+        let resources = JSON.parse(localStorage.getItem('edusphere_resources')) || defaultResources;
+        let currentUser = JSON.parse(localStorage.getItem('edusphere_user')) || null;
+        let currentView = 'dashboard';
+        let activeLevel = null;
+        let activeSubject = null;
+
+        // Initialize App on Window Load
+        window.onload = function() {
+            renderSidebar();
+            renderViewport();
+            updateAuthUI();
+        };
+
+        // Save State to LocalStorage
+        function saveState() {
+            localStorage.setItem('edusphere_curriculum', JSON.stringify(curriculum));
+            localStorage.setItem('edusphere_resources', JSON.stringify(resources));
+            localStorage.setItem('edusphere_user', JSON.stringify(currentUser));
+        }
+
+        // Render Sidebar Levels
+        function renderSidebar() {
+            const sidebar = document.getElementById('levelSidebar');
+            sidebar.innerHTML = '';
+
+            // Add 'All Levels' option
+            const allBtn = document.createElement('button');
+            allBtn.className = `w-full text-left px-3 py-2.5 rounded-xl text-xs font-semibold transition flex items-center space-x-3 ${!activeLevel ? 'bg-brand-50 text-brand-600 font-bold' : 'text-slate-600 hover:bg-slate-50'}`;
+            allBtn.innerHTML = `<i class="fa-solid fa-globe w-5 text-center text-brand-500"></i><span>All Educational Levels</span>`;
+            allBtn.onclick = () => { activeLevel = null; activeSubject = null; switchView('dashboard'); };
+            sidebar.appendChild(allBtn);
+
+            for (const [levelName, levelData] of Object.entries(curriculum)) {
+                const isSelected = activeLevel === levelName;
+                const btn = document.createElement('button');
+                btn.className = `w-full text-left px-3 py-2.5 rounded-xl text-xs font-semibold transition flex items-center justify-between ${isSelected ? 'bg-brand-50 text-brand-600 font-bold' : 'text-slate-600 hover:bg-slate-50'}`;
+                btn.innerHTML = `
+                    <div class="flex items-center space-x-3 truncate">
+                        <i class="fa-solid ${levelData.icon} w-5 text-center text-brand-500"></i>
+                        <span class="truncate">${levelName}</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-[10px] text-slate-400"></i>
+                `;
+                btn.onclick = () => {
+                    activeLevel = levelName;
+                    activeSubject = null;
+                    switchView('level-detail');
+                };
+                sidebar.appendChild(btn);
+            }
+        }
+
+        // Switch Views
+        function switchView(viewName) {
+            currentView = viewName;
+            renderViewport();
+            renderSidebar();
+        }
+
+        // Main Viewport Router
+        function renderViewport() {
+            const viewport = document.getElementById('mainViewport');
+            const breadcrumb = document.getElementById('breadcrumb');
+            const adminControls = document.getElementById('adminHeaderControls');
+
+            adminControls.innerHTML = ''; // Reset admin header controls
+
+            if (currentUser && currentUser.role === 'Admin') {
+                adminControls.innerHTML = `
+                    <button onclick="openAddSubjectModal()" class="bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold px-3 py-2 rounded-xl shadow transition flex items-center space-x-1.5">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>Add Subject</span>
+                    </button>
+                    <button onclick="switchView('admin-panel')" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-semibold px-3 py-2 rounded-xl shadow transition flex items-center space-x-1.5">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        <span>Admin Panel</span>
+                    </button>
+                `;
+            }
+
+            if (currentView === 'dashboard') {
+                document.getElementById('currentLevelTitle').innerText = 'All Educational Levels';
+                renderDashboardView(viewport);
+            } else if (currentView === 'level-detail') {
+                document.getElementById('currentLevelTitle').innerText = activeLevel;
+                renderLevelDetailView(viewport);
+            } else if (currentView === 'subject-detail') {
+                document.getElementById('currentLevelTitle').innerHTML = `<span class="cursor-pointer hover:underline" onclick="switchView('level-detail')">${activeLevel}</span> <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i> <span class="text-slate-800 font-semibold">${activeSubject}</span>`;
+                renderSubjectDetailView(viewport);
+            } else if (currentView === 'ai-tutor') {
+                document.getElementById('currentLevelTitle').innerText = 'EduSphere AI Support Assistant';
+                renderAITutorView(viewport);
+            } else if (currentView === 'admin-panel') {
+                document.getElementById('currentLevelTitle').innerText = 'Admin Management Panel';
+                renderAdminPanelView(viewport);
+            }
+        }
+
+        // Render Dashboard Overview
+        function renderDashboardView(container) {
+            let html = `
+                <div class="bg-gradient-to-r from-brand-600 to-blue-700 text-white rounded-3xl p-8 shadow-lg mb-8 relative overflow-hidden">
+                    <div class="relative z-10 max-w-2xl">
+                        <span class="bg-white/20 text-blue-100 text-xs px-3 py-1 rounded-full font-bold uppercase tracking-wider mb-3 inline-block">Global Academic Portal</span>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold mb-3">Empowering Education from Nursery to PhD</h2>
+                        <p class="text-blue-100 text-sm leading-relaxed mb-6">Explore verified curricula, textbooks, lecture links, and interactive study aids for students, teachers, and lecturers worldwide.</p>
+                        <div class="flex flex-wrap gap-3">
+                            <button onclick="switchView('ai-tutor')" class="bg-white text-brand-600 font-semibold px-5 py-2.5 rounded-xl text-xs shadow hover:bg-blue-50 transition">
+                                <i class="fa-solid fa-robot mr-1.5"></i> Ask AI Tutor
+                            </button>
+                            <button onclick="openSubmitModal()" class="bg-blue-800/80 hover:bg-blue-800 text-white font-semibold px-5 py-2.5 rounded-xl text-xs border border-blue-400/40 transition">
+                                <i class="fa-solid fa-upload mr-1.5"></i> Share Resource
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="font-bold text-slate-800 text-lg mb-4">Select Educational Level</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            `;
+
+            for (const [levelName, levelData] of Object.entries(curriculum)) {
+                const subCount = levelData.subjects.length;
+                html += `
+                    <div onclick="activeLevel='${levelName}'; activeSubject=null; switchView('level-detail');" class="bg-white hover:border-brand-500 border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition cursor-pointer flex flex-col justify-between group">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="w-12 h-12 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center text-xl group-hover:bg-brand-600 group-hover:text-white transition">
+                                    <i class="fa-solid ${levelData.icon}"></i>
+                                </div>
+                                <span class="bg-slate-100 text-slate-600 text-xs px-2.5 py-1 rounded-lg font-semibold">${subCount} Subjects</span>
+                            </div>
+                            <h4 class="font-bold text-slate-800 text-base mb-1 group-hover:text-brand-600 transition">${levelName}</h4>
+                            <p class="text-xs text-slate-500 leading-relaxed mb-4">${levelData.description}</p>
+                        </div>
+                        <div class="flex items-center text-xs font-bold text-brand-600 space-x-1">
+                            <span>Browse Curriculum</span>
+                            <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </div>
+                    </div>
+                `;
+            }
+
+            html += `</div>`;
+            container.innerHTML = html;
+        }
+
+        // Render Level Detail View (Subjects & Overview)
+        function renderLevelDetailView(container) {
+            const levelData = curriculum[activeLevel];
+            if (!levelData) return;
+
+            let html = `
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 mb-6">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-14 h-14 rounded-2xl bg-brand-600 text-white flex items-center justify-center text-2xl shadow">
+                            <i class="fa-solid ${levelData.icon}"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-slate-800">${activeLevel}</h2>
+                            <p class="text-xs text-slate-500">${levelData.description}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="font-bold text-slate-800 text-base mb-4">Curriculum Subjects</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            `;
+
+            levelData.subjects.forEach(subject => {
+                const count = resources.filter(r => r.level === activeLevel && r.subject === subject.name && r.approved).length;
+                html += `
+                    <div onclick="activeSubject='${subject.name}'; switchView('subject-detail');" class="bg-white hover:border-brand-500 border border-slate-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition cursor-pointer flex flex-col justify-between group">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <h4 class="font-bold text-slate-800 text-sm group-hover:text-brand-600 transition">${subject.name}</h4>
+                                <span class="bg-blue-50 text-brand-700 text-[11px] px-2 py-0.5 rounded-md font-semibold">${count} Resources</span>
+                            </div>
+                            <p class="text-xs text-slate-500 mb-3">${subject.desc}</p>
+                        </div>
+                        <div class="flex items-center text-xs font-bold text-brand-600 space-x-1">
+                            <span>Open Subject Portal</span>
+                            <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `</div>`;
+            container.innerHTML = html;
+        }
+
+        // Render Subject Detail & Resource Links
+        function renderSubjectDetailView(container) {
+            const subResources = resources.filter(r => r.level === activeLevel && r.subject === activeSubject && r.approved);
+
+            let html = `
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 mb-6 flex flex-wrap items-center justify-between gap-4">
+                    <div>
+                        <span class="text-xs font-bold text-brand-600 uppercase tracking-wider">${activeLevel}</span>
+                        <h2 class="text-xl font-bold text-slate-800">${activeSubject}</h2>
+                    </div>
+                    <button onclick="openSubmitModalForSubject('${activeLevel}', '${activeSubject}')" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold px-4 py-2 rounded-xl text-xs shadow transition flex items-center space-x-2">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>Add Resource Link</span>
+                    </button>
+                </div>
+
+                <h3 class="font-bold text-slate-800 text-base mb-4">Verified Learning Resources & Links</h3>
+                <div class="space-y-3">
+            `;
+
+            if (subResources.length === 0) {
+                html += `
+                    <div class="bg-white rounded-2xl p-8 text-center border border-slate-200">
+                        <div class="w-12 h-12 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mx-auto mb-3 text-lg">
+                            <i class="fa-solid fa-folder-open"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-700 text-sm mb-1">No Resource Links Available Yet</h4>
+                        <p class="text-xs text-slate-400 mb-4">Be the first teacher or student to contribute a verified study link for this subject.</p>
+                        <button onclick="openSubmitModal()" class="bg-brand-600 text-white font-semibold px-4 py-2 rounded-xl text-xs">Contribute Now</button>
+                    </div>
+                `;
+            } else {
+                subResources.forEach(res => {
+                    html += `
+                        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-brand-300 transition">
+                            <div class="space-y-1">
+                                <div class="flex items-center space-x-2">
+                                    <span class="bg-emerald-50 text-emerald-600 text-[10px] font-bold px-2 py-0.5 rounded">Verified Link</span>
+                                    <span class="text-xs text-slate-400">Shared by ${res.author} on ${res.date}</span>
+                                </div>
+                                <h4 class="font-bold text-slate-800 text-sm">${res.title}</h4>
+                                <p class="text-xs text-slate-500">${res.desc}</p>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <a href="${res.url}" target="_blank" class="bg-brand-50 hover:bg-brand-600 hover:text-white text-brand-600 font-semibold px-4 py-2 rounded-xl text-xs transition flex items-center space-x-1.5">
+                                    <i class="fa-solid fa-external-link"></i>
+                                    <span>Access Material</span>
+                                </a>
+                                ${currentUser && currentUser.role === 'Admin' ? `
+                                    <button onclick="deleteResource(${res.id})" class="bg-red-50 hover:bg-red-600 hover:text-white text-red-600 p-2 rounded-xl text-xs transition" title="Delete Resource">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                ` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            html += `</div>`;
+            container.innerHTML = html;
+        }
+
+        // Render AI Support Assistant Chat View
+        function renderAITutorView(container) {
+            container.innerHTML = `
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 flex flex-col h-[650px]">
+                    <div class="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50 rounded-t-2xl">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center text-lg">
+                                <i class="fa-solid fa-robot"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-slate-800 text-sm">EduSphere AI Study Assistant</h3>
+                                <p class="text-xs text-slate-500">Ask any academic question across Nursery, Primary, Secondary, or University levels</p>
+                            </div>
+                        </div>
+                        <span class="bg-emerald-100 text-emerald-700 text-xs font-bold px-2.5 py-1 rounded-full flex items-center space-x-1">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <span>Online</span>
+                        </span>
+                    </div>
+
+                    <div id="chatMessages" class="flex-1 p-4 overflow-y-auto space-y-4 bg-slate-50/50">
+                        <div class="flex items-start space-x-3">
+                            <div class="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center text-xs flex-shrink-0">
+                                <i class="fa-solid fa-robot"></i>
+                            </div>
+                            <div class="bg-white p-3.5 rounded-2xl rounded-tl-none shadow-sm border border-slate-200 text-sm text-slate-700 max-w-lg leading-relaxed">
+                                Hello! I am your EduSphere AI tutor powered by Gemini. How can I assist with your studies today? You can ask for lesson explanations, formula derivations, or curriculum guidance.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-4 border-t border-slate-100 bg-white rounded-b-2xl">
+                        <form onsubmit="handleAIChatSubmit(event)" class="flex items-center space-x-2">
+                            <input type="text" id="aiChatInput" placeholder="Ask a question (e.g., Explain photosynthesis for primary science...)" class="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-5 py-2.5 rounded-xl text-sm shadow transition flex items-center space-x-2">
+                                <i class="fa-solid fa-paper-plane"></i>
+                                <span>Send</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render Admin Management Panel
+        function renderAdminPanelView(container) {
+            if (!currentUser || currentUser.role !== 'Admin') {
+                container.innerHTML = `<div class="bg-white rounded-2xl p-8 text-center">Access Denied. Admin authorization required.</div>`;
+                return;
+            }
+
+            const pendingResources = resources.filter(r => !r.approved);
+
+            let html = `
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 mb-6">
+                    <h2 class="text-xl font-bold text-slate-800 mb-1">Admin Management & Approvals</h2>
+                    <p class="text-xs text-slate-500">Approve or reject submitted resource links and manage curriculum subjects.</p>
+                </div>
+
+                <h3 class="font-bold text-slate-800 text-base mb-4">Pending Resource Submissions (${pendingResources.length})</h3>
+                <div class="space-y-3 mb-8">
+            `;
+
+            if (pendingResources.length === 0) {
+                html += `<div class="bg-white rounded-xl p-4 text-xs text-slate-500 border border-slate-200">No pending submissions awaiting review.</div>`;
+            } else {
+                pendingResources.forEach(res => {
+                    html += `
+                        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <div>
+                                <div class="flex items-center space-x-2 mb-1">
+                                    <span class="bg-amber-50 text-amber-600 text-[10px] font-bold px-2 py-0.5 rounded">Pending Review</span>
+                                    <span class="text-xs text-slate-400">Level: ${res.level} | Subject: ${res.subject}</span>
+                                </div>
+                                <h4 class="font-bold text-slate-800 text-sm">${res.title}</h4>
+                                <p class="text-xs text-slate-500">${res.desc}</p>
+                                <a href="${res.url}" target="_blank" class="text-xs text-brand-600 underline mt-1 inline-block">${res.url}</a>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <button onclick="approveResource(${res.id})" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-3 py-2 rounded-xl text-xs shadow transition">
+                                    Approve
+                                </button>
+                                <button onclick="deleteResource(${res.id})" class="bg-red-50 hover:bg-red-600 hover:text-white text-red-600 font-semibold px-3 py-2 rounded-xl text-xs transition">
+                                    Reject
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            html += `</div>`;
+            container.innerHTML = html;
+        }
+
+        // AI Chat Submission with Gemini API
+        async function handleAIChatSubmit(e) {
+            e.preventDefault();
+            const inputEl = document.getElementById('aiChatInput');
+            const prompt = inputEl.value.trim();
+            if (!prompt) return;
+
+            const chatMessages = document.getElementById('chatMessages');
+            
+            // Append User Message
+            chatMessages.innerHTML += `
+                <div class="flex items-start justify-end space-x-3">
+                    <div class="bg-brand-600 text-white p-3.5 rounded-2xl rounded-tr-none shadow-sm text-sm max-w-lg leading-relaxed">
+                        ${escapeHtml(prompt)}
+                    </div>
+                    <div class="w-8 h-8 rounded-lg bg-brand-700 text-white flex items-center justify-center text-xs flex-shrink-0">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                </div>
+            `;
+            inputEl.value = '';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // Loading state for AI
+            const loadingId = 'ai-loading-' + Date.now();
+            chatMessages.innerHTML += `
+                <div id="${loadingId}" class="flex items-start space-x-3">
+                    <div class="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center text-xs flex-shrink-0">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <div class="bg-white p-3.5 rounded-2xl rounded-tl-none shadow-sm border border-slate-200 text-sm text-slate-500">
+                        Thinking...
+                    </div>
+                </div>
+            `;
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            try {
+                const systemPrompt = "You are EduSphere AI, a world-class academic tutor helping students and educators from Nursery to PhD level. Provide clear, well-structured, and accurate academic answers.";
+                const apiKey = "";
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+                
+                const payload = {
+                    contents: [{ parts: [{ text: prompt }] }],
+                    systemInstruction: { parts: [{ text: systemPrompt }] }
+                };
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+                const candidate = result.candidates?.[0];
+                const aiResponse = candidate && candidate.content?.parts?.[0]?.text ? candidate.content.parts[0].text : "I apologize, but I could not generate an answer at this moment. Please try again.";
+
+                document.getElementById(loadingId).remove();
+
+                chatMessages.innerHTML += `
+                    <div class="flex items-start space-x-3">
+                        <div class="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center text-xs flex-shrink-0">
+                            <i class="fa-solid fa-robot"></i>
+                        </div>
+                        <div class="bg-white p-3.5 rounded-2xl rounded-tl-none shadow-sm border border-slate-200 text-sm text-slate-700 max-w-lg leading-relaxed">
+                            ${escapeHtml(aiResponse)}
+                        </div>
+                    </div>
+                `;
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            } catch (err) {
+                document.getElementById(loadingId).remove();
+                chatMessages.innerHTML += `
+                    <div class="flex items-start space-x-3">
+                        <div class="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center text-xs flex-shrink-0">
+                            <i class="fa-solid fa-robot"></i>
+                        </div>
+                        <div class="bg-white p-3.5 rounded-2xl rounded-tl-none shadow-sm border border-slate-200 text-sm text-red-600 max-w-lg">
+                            Connection error. Please check your network or API settings.
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // Global Search Engine Handler
+        function handleGlobalSearch(query) {
+            const q = query.toLowerCase().trim();
+            if (!q) {
+                if (currentView === 'search-results') switchView('dashboard');
+                return;
+            }
+
+            currentView = 'search-results';
+            const viewport = document.getElementById('mainViewport');
+            document.getElementById('currentLevelTitle').innerText = `Search Results: "${query}"`;
+
+            const matchingResources = resources.filter(r => r.approved && (r.title.toLowerCase().includes(q) || r.subject.toLowerCase().includes(q) || r.level.toLowerCase().includes(q) || r.desc.toLowerCase().includes(q)));
+
+            let html = `
+                <h3 class="font-bold text-slate-800 text-base mb-4">Search Results (${matchingResources.length})</h3>
+                <div class="space-y-3">
+            `;
+
+            if (matchingResources.length === 0) {
+                html += `<div class="bg-white rounded-2xl p-6 text-center text-slate-500 text-sm">No resources found matching "${escapeHtml(query)}".</div>`;
+            } else {
+                matchingResources.forEach(res => {
+                    html += `
+                        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex items-center justify-between">
+                            <div>
+                                <span class="bg-brand-50 text-brand-600 text-[10px] font-bold px-2 py-0.5 rounded">${res.level} > ${res.subject}</span>
+                                <h4 class="font-bold text-slate-800 text-sm mt-1">${res.title}</h4>
+                                <p class="text-xs text-slate-500">${res.desc}</p>
+                            </div>
+                            <a href="${res.url}" target="_blank" class="bg-brand-600 text-white px-4 py-2 rounded-xl text-xs font-semibold">Access</a>
+                        </div>
+                    `;
+                });
+            }
+
+            html += `</div>`;
+            viewport.innerHTML = html;
+        }
+
+        // Modal Controllers
+        function openLoginModal() { document.getElementById('loginModal').classList.remove('hidden'); }
+        function closeLoginModal() { document.getElementById('loginModal').classList.add('hidden'); }
+        
+        function openSubmitModal() {
+            populateLevelDropdown();
+            document.getElementById('submitModal').classList.remove('hidden');
+        }
+        function closeSubmitModal() { document.getElementById('submitModal').classList.add('hidden'); }
+
+        function openSubmitModalForSubject(level, subject) {
+            openSubmitModal();
+            document.getElementById('resLevel').value = level;
+            populateSubjectDropdown(level);
+            document.getElementById('resSubject').value = subject;
+        }
+
+        function openAddSubjectModal() {
+            const select = document.getElementById('newSubLevel');
+            select.innerHTML = '';
+            for (const levelName of Object.keys(curriculum)) {
+                select.innerHTML += `<option value="${levelName}">${levelName}</option>`;
+            }
+            document.getElementById('addSubjectModal').classList.remove('hidden');
+        }
+        function closeAddSubjectModal() { document.getElementById('addSubjectModal').classList.add('hidden'); }
+
+        // Populate Dropdowns
+        function populateLevelDropdown() {
+            const select = document.getElementById('resLevel');
+            select.innerHTML = '';
+            for (const levelName of Object.keys(curriculum)) {
+                select.innerHTML += `<option value="${levelName}">${levelName}</option>`;
+            }
+            if (activeLevel) select.value = activeLevel;
+            populateSubjectDropdown(select.value);
+        }
+
+        function populateSubjectDropdown(levelName) {
+            const select = document.getElementById('resSubject');
+            select.innerHTML = '';
+            const levelData = curriculum[levelName];
+            if (levelData) {
+                levelData.subjects.forEach(sub => {
+                    select.innerHTML += `<option value="${sub.name}">${sub.name}</option>`;
+                });
+            }
+            if (activeSubject) select.value = activeSubject;
+        }
+
+        // Handle Login
+        function handleLogin(e) {
+            e.preventDefault();
+            const name = document.getElementById('loginName').value;
+            const role = document.getElementById('loginRole').value;
+            currentUser = { name, role };
+            saveState();
+            closeLoginModal();
+            updateAuthUI();
+            renderViewport();
+            showToast(`Logged in successfully as ${role}`);
+        }
+
+        function logout() {
+            currentUser = null;
+            saveState();
+            updateAuthUI();
+            renderViewport();
+            showToast('Logged out successfully');
+        }
+
+        function updateAuthUI() {
+            const loginBtn = document.getElementById('loginBtnNav');
+            const logoutBtn = document.getElementById('logoutBtnNav');
+            const userBadge = document.getElementById('userBadge');
+
+            if (currentUser) {
+                loginBtn.classList.add('hidden');
+                logoutBtn.classList.remove('hidden');
+                userBadge.classList.remove('hidden');
+                document.getElementById('userNameDisplay').innerText = currentUser.name;
+                document.getElementById('userRoleTag').innerText = currentUser.role;
+                document.getElementById('userRoleIcon').className = currentUser.role === 'Admin' ? 'fa-solid fa-user-shield text-amber-300' : 'fa-solid fa-user';
+            } else {
+                loginBtn.classList.remove('hidden');
+                logoutBtn.classList.add('hidden');
+                userBadge.classList.add('hidden');
+            }
+        }
+
+        // Handle Resource Submission
+        function handleResourceSubmit(e) {
+            e.preventDefault();
+            if (!currentUser) {
+                closeSubmitModal();
+                openLoginModal();
+                showToast('Please sign in first to submit resources.');
+                return;
+            }
+
+            const title = document.getElementById('resTitle').value;
+            const level = document.getElementById('resLevel').value;
+            const subject = document.getElementById('resSubject').value;
+            const url = document.getElementById('resUrl').value;
+            const desc = document.getElementById('resDesc').value;
+
+            const isApproved = currentUser.role === 'Admin';
+
+            resources.push({
+                id: Date.now(),
+                title, level, subject, url, desc,
+                author: currentUser.name,
+                date: new Date().toISOString().split('T')[0],
+                approved: isApproved
+            });
+
+            saveState();
+            closeSubmitModal();
+            document.getElementById('submitResourceForm').reset();
+            renderViewport();
+            showToast(isApproved ? 'Resource published successfully!' : 'Resource submitted for Admin approval.');
+        }
+
+        // Handle Admin Add Subject
+        function handleAddSubject(e) {
+            e.preventDefault();
+            const level = document.getElementById('newSubLevel').value;
+            const name = document.getElementById('newSubName').value;
+            const desc = document.getElementById('newSubDesc').value;
+
+            if (curriculum[level]) {
+                curriculum[level].subjects.push({ name, desc });
+                saveState();
+                closeAddSubjectModal();
+                renderSidebar();
+                renderViewport();
+                showToast(`Subject "${name}" added successfully to ${level}!`);
+            }
+        }
+
+        // Admin Actions
+        function approveResource(id) {
+            const res = resources.find(r => r.id === id);
+            if (res) {
+                res.approved = true;
+                saveState();
+                renderViewport();
+                showToast('Resource approved and published!');
+            }
+        }
+
+        function deleteResource(id) {
+            resources = resources.filter(r => r.id !== id);
+            saveState();
+            renderViewport();
+            showToast('Resource deleted.');
+        }
+
+        // Toast Notification Helper
+        function showToast(message) {
+            const toast = document.getElementById('toastNotification');
+            document.getElementById('toastMessage').innerText = message;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // Escape HTML for security
+        function escapeHtml(text) {
+            const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+        }
+    </script>
+</body>
+</html>
